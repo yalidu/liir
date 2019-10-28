@@ -2,16 +2,7 @@ import torch as th
 import torch.nn as nn
 import torch.nn.functional as F
 
-"""
-revise for the central-v
 
-the 
-
-"""
-import pdb    
-
-# critic for meta
-# coma version, nagts values
 class LIIRCritic(nn.Module):
     def __init__(self, scheme, args):
         super(LIIRCritic, self).__init__()
@@ -31,21 +22,20 @@ class LIIRCritic(nn.Module):
 
         self.fc4 = nn.Linear(128*self.n_agents,1)
 
-        # no scale for r_in
-    def forward_not_scale(self, batch, t=None):
-        inputs = self._build_inputs(batch, t=t) #(bs, eplen, nagts, fea_len)
-        x_1 = F.relu(self.fc1(inputs)) # (bs, eplen, nagts, 128)
-        x_1 = F.relu(self.fc2(x_1)) # (bs, eplen, nagts, 128)
-        v_mix = self.fc3_v_mix(x_1) # (bs, eplen, nagts)
+#     def forward(self, batch, t=None):
+#         inputs = self._build_inputs(batch, t=t) #(bs, eplen, nagts, fea_len)
+#         x_1 = F.relu(self.fc1(inputs)) # (bs, eplen, nagts, 128)
+#         x_1 = F.relu(self.fc2(x_1)) # (bs, eplen, nagts, 128)
+#         v_mix = self.fc3_v_mix(x_1) # (bs, eplen, nagts)
 
-        max_t = batch.max_seq_length if t is None else 1
+#         max_t = batch.max_seq_length if t is None else 1
         
-        x1 = x_1.reshape(self.args.batch_size, max_t,-1) #(bs, eplen, nagts*128)
-        v_ex =  self.fc4(x1)  # (bs, eplen, 1)
-        r_in = ( self.fc3_r_in(x_1) ) # (bs, eplen, nagts, nactions)
-        return r_in, v_mix, v_ex
+#         x1 = x_1.reshape(self.args.batch_size, max_t,-1) #(bs, eplen, nagts*128)
+#         v_ex =  self.fc4(x1)  # (bs, eplen, 1)
+#         r_in = ( self.fc3_r_in(x_1) ) # (bs, eplen, nagts, nactions)
+#         return r_in, v_mix, v_ex
     
-    # with tanh on intrinsic 
+    
     def forward(self, batch, t=None):
         inputs = self._build_inputs(batch, t=t) #(bs, eplen, nagts, fea_len)
         x_1 = F.relu(self.fc1(inputs)) # (bs, eplen, nagts, 128)

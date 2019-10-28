@@ -115,7 +115,7 @@ class LIIRLearner:
         # ____value loss
         v_ex_loss = (((v_ex - target_ex.detach()) ** 2).view(-1, 1) * mask).sum() / mask.sum()
 
-        # _____pg loss1____
+        # _____pg1____
         mac_out_old = []
         self.policy_old.init_hidden(batch.batch_size)
         for t in range(batch.max_seq_length - 1):
@@ -137,7 +137,7 @@ class LIIRLearner:
         log_pi_taken_old = log_pi_taken_old.reshape(-1, self.n_agents)
         log_pi_taken_old = log_pi_taken_old * mask_alive
 
-        # ______pg_loss2___new pi theta
+        # ______pg2___new pi theta
         self._update_policy()  # update policy_new to new params
 
         mac_out_new = []
@@ -168,7 +168,7 @@ class LIIRLearner:
         adv_ex = (target_ex - v_ex.detach()).detach()
         adv_ex = (adv_ex - adv_ex.mean()) / (adv_ex.std() + 1e-8)
 
-        # _______ gadient for pg loss1 and loss2---
+        # _______ gadient for pg 1 and 2---
         mask_tnagt = critic_mask.repeat(1, 1, self.n_agents)
 
         pg_loss1 = (log_pi_taken_old.view(-1, 1) * mask_long).sum() / mask_long.sum()
@@ -301,8 +301,4 @@ class LIIRLearner:
         self.critic_optimiser.load_state_dict(
             th.load("{}/critic_opt.th".format(path), map_location=lambda storage, loc: storage))
 
-    def _adjust_learning_rate(self, update, num_updates):
-        lr_frac = 1 - (update / num_updates)
-        adjust_lr = self.args.lr * lr_frac
-        for param_group in self.intrinsic_optimiser.param_groups:
-            param_group['lr'] = adjust_lr
+
