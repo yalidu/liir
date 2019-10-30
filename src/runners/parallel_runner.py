@@ -3,11 +3,6 @@ from functools import partial
 from components.episode_buffer import EpisodeBatch
 from multiprocessing import Pipe, Process
 import numpy as np
-import torch as th
-
-import os
-# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-# os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 # Based (very) heavily on SubprocVecEnv from OpenAI Baselines
 # https://github.com/openai/baselines/blob/master/baselines/common/vec_env/subproc_vec_env.py

@@ -4,9 +4,6 @@ from modules.critics.liir import LIIRCritic
 from utils.rl_utils import build_td_lambda_targets
 import torch as th
 from torch.optim import RMSprop
-import numpy as np
-import pdb
-
 
 vf_coef = 1.0
 class LIIRLearner:
@@ -103,7 +100,6 @@ class LIIRLearner:
         log_pi_taken = log_pi_taken.reshape(-1, 1)
 
         liir_loss = - ((advantages * log_pi_taken) * mask_long).sum() / mask_long.sum()
-        
 
         # Optimise agents
         self.agent_optimiser.zero_grad()
@@ -189,8 +185,7 @@ class LIIRLearner:
         intrinsic_loss = pg_ex_loss + vf_coef * v_ex_loss
         self.intrinsic_optimiser.zero_grad()
         intrinsic_loss.backward()
-        grad_norm_intrinsic = th.nn.utils.clip_grad_norm_(self.intrinsic_params, 1.)
-                    
+
         self.intrinsic_optimiser.step()
             
         self._update_policy_piold()

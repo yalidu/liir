@@ -15,12 +15,6 @@ from controllers import REGISTRY as mac_REGISTRY
 from components.episode_buffer import ReplayBuffer
 from components.transforms import OneHot
 
-import numpy 
-import numpy as np
-
-import pdb
-
-
 def run(_run, _config, _log):
 
     # check args sanity

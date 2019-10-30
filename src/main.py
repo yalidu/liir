@@ -14,9 +14,6 @@ import datetime
 
 from run import run
 
-import pdb
-
-
 
 SETTINGS['CAPTURE_MODE'] = "fd" # set to "no" if you want to see stdout/stderr in console
 logger = get_logger()
@@ -34,13 +31,6 @@ def my_main(_run, _config, _log, env_args):
     np.random.seed(_config["seed"])
     th.manual_seed(_config["seed"])
     env_args['seed'] = _config["seed"]
-    # th.cuda.manual_seed(_config["seed"])
-    
-#     np.random.seed(12345)
-#     th.manual_seed(12345)
-#     env_args['seed'] =12345
-#     th.cuda.manual_seed(12345)
-    
 
     # run the framework
     run(_run, _config, _log)
@@ -85,12 +75,10 @@ if __name__ == '__main__':
     # Load algorithm and env base configs
     env_config = _get_config(params, "--env-config", "envs")
     alg_config = _get_config(params, "--config", "algs")
-    # config_dict = {**config_dict, **env_config, **alg_config}
     config_dict = recursive_dict_update(config_dict, env_config)
     config_dict = recursive_dict_update(config_dict, alg_config)
     
     # specify the map for experiment
-    # CUDA_VISIBLE_DEVICES=3 python3 src/main.py --config=coma_smac --env-config=sc2 --map=3m
     map_name = None
     for _i, _v in enumerate(params):
         if _v.split("=")[0] == "--map":
@@ -107,7 +95,7 @@ if __name__ == '__main__':
 
     # Save to disk by default for sacred
     unique_token = "{}_{}_{}".format(config_dict['name'], map_name, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-    logger.info("Saving to FileStorageObserver in results/sacred/{}/.".format(unique_token))  # qmix_smac_3m
+    logger.info("Saving to FileStorageObserver in results/sacred/{}/.".format(unique_token))
     file_obs_path = os.path.join(results_path, "sacred", unique_token)
     ex.observers.append(FileStorageObserver.create(file_obs_path))
 
